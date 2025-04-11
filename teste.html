@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enviar Localização</title>
+</head>
+<body>
+    <h1>Teste de Envio de Localização</h1>
+    <p>Clique abaixo para enviar sua localização:</p>
+    <button onclick="getLocation()">Enviar Localização</button>
+    <p id="resultado"></p>
+
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(sendPosition, showError);
+            } else {
+                document.getElementById("resultado").innerHTML = "Geolocalização não suportada pelo navegador.";
+            }
+        }
+
+        function sendPosition(position) {
+            let latitude = position.coords.latitude;
+            let longitude = position.coords.longitude;
+            let urlServidor = "INSIRA_AQUI_O_ENDERECO_DO_SERVIDOR"; // Substituir pelo endereço do servidor (passo 3)
+
+            // Enviar os dados para o servidor
+            fetch(urlServidor, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ latitude: latitude, longitude: longitude })
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("resultado").innerHTML = "Localização enviada com sucesso!";
+            })
+            .catch(error => {
+                document.getElementById("resultado").innerHTML = "Erro ao enviar: " + error.message;
+            });
+        }
+
+        function showError(error) {
+            let mensagem;
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    mensagem = "Permissão para geolocalização negada.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    mensagem = "Informações de localização indisponíveis.";
+                    break;
+                case error.TIMEOUT:
+                    mensagem = "A solicitação de localização expirou.";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    mensagem = "Ocorreu um erro desconhecido.";
+                    break;
+            }
+            document.getElementById("resultado").innerHTML = mensagem;
+        }
+    </script>
+</body>
+</html>
