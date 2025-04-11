@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Geolocalização</title>
+</head>
+<body>
+    <h1>Teste de Localização</h1>
+    <p>Clique no botão abaixo para obter sua localização:</p>
+    <button onclick="getLocation()">Obter Localização</button>
+    <p id="resultado"></p>
+
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                document.getElementById("resultado").innerHTML = "Geolocalização não é suportada por este navegador.";
+            }
+        }
+
+        function showPosition(position) {
+            let latitude = position.coords.latitude;
+            let longitude = position.coords.longitude;
+            document.getElementById("resultado").innerHTML = 
+                "Latitude: " + latitude + "<br>Longitude: " + longitude + 
+                "<br><a href='https://www.google.com/maps?q=" + latitude + "," + longitude + "' target='_blank'>Ver no Google Maps</a>";
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    document.getElementById("resultado").innerHTML = "Permissão para geolocalização foi negada.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    document.getElementById("resultado").innerHTML = "Informações de localização indisponíveis.";
+                    break;
+                case error.TIMEOUT:
+                    document.getElementById("resultado").innerHTML = "A solicitação de localização expirou.";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    document.getElementById("resultado").innerHTML = "Ocorreu um erro desconhecido.";
+                    break;
+            }
+        }
+    </script>
+</body>
+</html>
